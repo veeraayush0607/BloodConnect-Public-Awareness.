@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodConnect Pro | 2026 Emergency Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        :root { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* ANIMATED BACKGROUND */
+        body {
+            background: linear-gradient(-45deg, #fff5f5, #ffffff, #ffebeb, #ffffff);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* FLOATING PARTICLES */
+        .particle {
+            position: fixed;
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: 50%;
+            z-index: -1;
+            animation: floatParticle 20s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        .glass { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        
+        .hero-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <div id="particle-container"></div>
+
+    <nav class="sticky top-0 z-50 glass p-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-red-600 p-2 rounded-xl shadow-lg shadow-red-200">
+                    <i class="fas fa-droplet text-white animate-pulse"></i>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tighter">BLOOD<span class="text-red-600 uppercase">Connect</span></h1>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-bold text-xs uppercase tracking-widest">
+                <button onclick="showPage('home')" class="hover:text-red-600 transition">Home</button>
+                <button onclick="showPage('feed')" class="hover:text-red-600 transition">Live Requests</button>
+                <button onclick="showPage('request')" class="bg-red-600 text-white px-6 py-3 rounded-xl shadow-xl shadow-red-100 hover:scale-105 transition active:scale-95">SOS Request</button>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="page container mx-auto mt-20 p-6 text-center relative">
+        <div class="hero-glow top-0 left-1/2 -translate-x-1/2"></div>
+        <h2 class="text-7xl font-black text-slate-900 mb-8 leading-tight tracking-tighter">
+            Smart Response. <br><span class="text-red-600">Saved Lives.</span>
+        </h2>
+        <p class="text-lg text-slate-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+            Bridging the gap between critical blood needs and verified donors through a real-time, cloud-synchronized public awareness portal.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6">
+            <button onclick="showPage('request')" class="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-black transition">Post SOS</button>
+            <button onclick="showPage('feed')" class="glass px-12 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white transition">View Live Feed</button>
+        </div>
+    </section>
+
+    <section id="request" class="page container mx-auto p-6 hidden">
+        <div class="max-w-xl mx-auto glass p-10 rounded-[3rem] shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-red-50 rounded-full blur-3xl"></div>
+            <h2 class="text-3xl font-black mb-8 text-slate-900 italic">Emergency Broadcast</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Patient Name</label>
+                    <input type="text" id="pName" placeholder="Enter Full Name" class="w-full mt-2 p-5 bg-white/50 border border-white rounded-2xl outline-none focus:ring-4 ring-red-100 transition shadow-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Blood Group</label>
+                        <select id="bGroup" class="w-full mt-2 p-5 bg-white/50 border border-white rounded-2xl outline-none focus:ring-4 ring-red-100 transition shadow-sm">
+                            <option>Select</option>
+                            <option>O +ve</option><option>O -ve</option><option>A +ve</option><option>B +ve</option><option>AB +ve</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Hospital</label>
+                        <input type="text" id="hName" onkeyup="suggestHospitals()" placeholder="Search..." class="w-full mt-2 p-5 bg-white/50 border border-white rounded-2xl outline-none focus:ring-4 ring-red-100 transition shadow-sm">
+                        <div id="suggestions" class="absolute z-10 w-full bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl mt-2 max-h-40 overflow-y-auto hidden border border-slate-100"></div>
+                    </div>
+                </div>
+                <button id="sendBtn" onclick="saveToCloud()" class="w-full bg-red-600 text-white font-black py-6 rounded-2xl text-sm uppercase tracking-widest shadow-xl shadow-red-200 hover:bg-red-700 transition">Broadcast SOS to Cloud</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="feed" class="page container mx-auto p-6 hidden">
+        <h2 class="text-4xl font-black text-slate-900 mb-12 text-center tracking-tighter uppercase">Live <span class="text-red-600">Sync</span> Feed</h2>
+        <div id="dataGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk8pph8JjesgK90J1ts3fQ98Y0FucSViw",
+            authDomain: "bloodconnect-e797a.firebaseapp.com",
+            projectId: "bloodconnect-e797a",
+            storageBucket: "bloodconnect-e797a.firebasestorage.app",
+            messagingSenderId: "836968709958",
+            appId: "1:836968709958:web:d290c1df4da9eee154ef47"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Particle Generation
+        const container = document.getElementById('particle-container');
+        for(let i=0; i<15; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.width = p.style.height = Math.random() * 30 + 10 + 'px';
+            p.style.animationDuration = Math.random() * 10 + 10 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(p);
+        }
+
+        // Logic
+        const hospitals = ["Ruby Hall Clinic, Pune", "Jehangir Hospital", "Sassoon Hospital", "Jupiter Hospital", "Noble Hospital", "Sahyadri Hospital"];
+        window.suggestHospitals = () => {
+            const input = document.getElementById('hName').value.toLowerCase();
+            const div = document.getElementById('suggestions');
+            if(input.length < 1) { div.classList.add('hidden'); return; }
+            const matches = hospitals.filter(h => h.toLowerCase().includes(input));
+            div.innerHTML = matches.map(h => `<div onclick="pickHospital('${h}')" class="p-4 hover:bg-red-50 cursor-pointer text-xs font-bold border-b border-slate-50">${h}</div>`).join('');
+            div.classList.toggle('hidden', matches.length === 0);
+        };
+        window.pickHospital = (h) => { document.getElementById('hName').value = h; document.getElementById('suggestions').classList.add('hidden'); };
+
+        window.saveToCloud = async () => {
+            const btn = document.getElementById('sendBtn');
+            const data = { 
+                patient: document.getElementById('pName').value, 
+                bloodGroup: document.getElementById('bGroup').value, 
+                hospital: document.getElementById('hName').value,
+                createdAt: new Date(), 
+                timeLabel: new Date().toLocaleTimeString() 
+            };
+            if(!data.patient || data.bloodGroup === "Select") return alert("Please fill all details!");
+            btn.innerText = "Syncing..."; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "emergency_requests"), data);
+                alert("Data Persistent in Cloud!"); showPage('feed');
+            } catch (e) { alert(e.message); }
+            btn.innerText = "Broadcast SOS to Cloud"; btn.disabled = false;
+        };
+
+        window.fetchFromCloud = async () => {
+            const grid = document.getElementById('dataGrid');
+            grid.innerHTML = "<p class='col-span-full text-center py-20 animate-pulse'>Fetching Cloud Database...</p>";
+            const q = query(collection(db, "emergency_requests"), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            grid.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                grid.innerHTML += `
+                    <div class="glass p-8 rounded-[2.5rem] shadow-xl border border-white hover:scale-[1.02] transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl font-black text-red-600 tracking-tighter">${d.bloodGroup}</span>
+                            <span class="text-[10px] font-black text-slate-400 bg-white/50 px-3 py-1 rounded-full">${d.timeLabel}</span>
+                        </div>
+                        <h4 class="text-xl font-extrabold text-slate-800 uppercase mb-2">${d.patient}</h4>
+                        <p class="text-xs font-bold text-slate-400"><i class="fas fa-location-dot mr-1"></i> ${d.hospital}</p>
+                    </div>`;
+            });
+        };
+
+        window.showPage = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            if(id === 'feed') fetchFromCloud();
+        };
+    </script>
+</body>
+</html>
